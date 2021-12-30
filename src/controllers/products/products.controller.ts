@@ -8,7 +8,7 @@ import {
   Param,
   Post,
   Put,
-  Query,
+  // Query,
   Res,
 } from '@nestjs/common';
 
@@ -34,15 +34,20 @@ export class ProductsController {
     ya se encuentra nombrado en el decorador @Controller('products')
   */
 
-  @Get() // http://localhost:3000/products?brand=Prueba
-  getProducts(
-    @Query('limit') limit = 100,
-    @Query('offset') offset = 50,
-    @Query('brand') brand: string,
-  ) {
-    // return {
-    //   message: `Productos limit: ${limit} and offset: ${offset}. Productos brand: ${brand}`,
-    // };
+  // @Get() // http://localhost:3000/products?brand=Prueba
+  // getProducts(
+  //   @Query('limit') limit = 100,
+  //   @Query('offset') offset = 50,
+  //   @Query('brand') brand: string,
+  // ) {
+  //   // return {
+  //   //   message: `Productos limit: ${limit} and offset: ${offset}. Productos brand: ${brand}`,
+  //   // };
+  //   return this.productsService.findAll();
+  // }
+
+  @Get() // http://localhost:3000/products
+  getProducts() {
     return this.productsService.findAll();
   }
 
@@ -59,7 +64,7 @@ export class ProductsController {
 
   //Si necesito manejar directamente el response de express
   // No es recomendable, lo ideal es usar decoradores, pero es bueno saber que se puede hacer
-  // Nota: Al manejar manualmente el response, evitamos que haga return del service automático
+  // Nota: Al manejar manualmente el response, evitamos que haga return del service automático, espera que lo hagamos manual
   @Get('express/:productId')
   @HttpCode(HttpStatus.ACCEPTED)
   getProductExpress(@Res() response: Response, @Param('productId') id: string) {

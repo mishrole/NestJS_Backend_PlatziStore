@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Product } from './../../models/product.entity';
 
 @Injectable()
@@ -20,7 +25,14 @@ export class ProductsService {
   }
 
   findOne(id: number) {
-    return this.products.find((item) => item.id === id);
+    const product = this.products.find((item) => item.id === id);
+
+    // Error first
+    if (!product) {
+      throw new NotFoundException(`El producto con el id ${id} no existe`);
+    }
+
+    return product;
   }
 
   create(payload: any) {
@@ -36,23 +48,31 @@ export class ProductsService {
   update(id: number, product: Product) {
     const productFound = this.findOne(id);
 
-    if (productFound) {
-      productFound.name = product.name;
-      productFound.description = product.description;
-      productFound.price = product.price;
-      productFound.stock = product.stock;
-
-      const productIndex = this.products.indexOf(productFound);
-      this.products[productIndex] = productFound;
-      return productFound;
+    if (!productFound) {
+      throw new HttpException(
+        `El producto con el id ${id} no existe`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    return `El producto con el id ${id} no existe`;
+    productFound.name = product.name;
+    productFound.description = product.description;
+    productFound.price = product.price;
+    productFound.stock = product.stock;
+
+    const productIndex = this.products.indexOf(productFound);
+    this.products[productIndex] = productFound;
+    return productFound;
   }
 
   delete(id: number) {
-    const productFound = this.findOne(id);
-    const productIndex = this.products.indexOf(productFound);
+    const product = this.findOne(id);
+
+    if (!product) {
+      throw new NotFoundException(`El producto con el id ${id} no existe`);
+    }
+
+    const productIndex = this.products.indexOf(product);
     this.products.splice(productIndex, 1);
     return `Producto ${id} eliminado`;
   }
