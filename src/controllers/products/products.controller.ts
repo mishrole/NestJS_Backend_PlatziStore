@@ -10,11 +10,12 @@ import {
   Put,
   // Query,
   Res,
-  ParseIntPipe,
+  // ParseIntPipe,
 } from '@nestjs/common';
 
 import { Response } from 'express';
 import { ProductsService } from './../../services/products/products.service';
+import { ParseIntPipe } from 'src/shared/parse-int.pipe';
 
 @Controller('products')
 export class ProductsController {
