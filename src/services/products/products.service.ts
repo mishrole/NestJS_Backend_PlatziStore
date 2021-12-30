@@ -35,19 +35,25 @@ export class ProductsService {
 
   update(id: number, product: Product) {
     const productFound = this.findOne(id);
-    productFound.name = product.name;
-    productFound.description = product.description;
-    productFound.price = product.price;
-    productFound.stock = product.stock;
 
-    const productIndex = this.products.indexOf(productFound);
-    this.products[productIndex] = productFound;
-    return productFound;
+    if (productFound) {
+      productFound.name = product.name;
+      productFound.description = product.description;
+      productFound.price = product.price;
+      productFound.stock = product.stock;
+
+      const productIndex = this.products.indexOf(productFound);
+      this.products[productIndex] = productFound;
+      return productFound;
+    }
+
+    return `El producto con el id ${id} no existe`;
   }
 
   delete(id: number) {
     const productFound = this.findOne(id);
     const productIndex = this.products.indexOf(productFound);
     this.products.splice(productIndex, 1);
+    return `Producto ${id} eliminado`;
   }
 }

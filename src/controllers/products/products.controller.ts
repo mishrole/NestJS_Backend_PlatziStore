@@ -13,9 +13,12 @@ import {
 } from '@nestjs/common';
 
 import { Response } from 'express';
+import { ProductsService } from './../../services/products/products.service';
 
 @Controller('products')
 export class ProductsController {
+  constructor(private productsService: ProductsService) {}
+
   // Parámetros tipo Query
   // Enviar múltiples parámetros concatenados
   // Si no pasamos nada y no lo controlamos, es undefined
@@ -37,9 +40,10 @@ export class ProductsController {
     @Query('offset') offset = 50,
     @Query('brand') brand: string,
   ) {
-    return {
-      message: `Productos limit: ${limit} and offset: ${offset}. Productos brand: ${brand}`,
-    };
+    // return {
+    //   message: `Productos limit: ${limit} and offset: ${offset}. Productos brand: ${brand}`,
+    // };
+    return this.productsService.findAll();
   }
 
   // Error común : Este endpoint se cruza con getProduct por products/:id
@@ -55,6 +59,7 @@ export class ProductsController {
 
   //Si necesito manejar directamente el response de express
   // No es recomendable, lo ideal es usar decoradores, pero es bueno saber que se puede hacer
+  // Nota: Al manejar manualmente el response, evitamos que haga return del service automático
   @Get('express/:productId')
   @HttpCode(HttpStatus.ACCEPTED)
   getProductExpress(@Res() response: Response, @Param('productId') id: string) {
@@ -67,35 +72,39 @@ export class ProductsController {
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
   getProduct(@Param('productId') id: string) {
-    return {
-      message: `El productId es ${id}`,
-    };
+    // return {
+    //   message: `El productId es ${id}`,
+    // };
+    return this.productsService.findOne(+id);
   }
 
   @Post()
   create(@Body() payload: any) {
-    return {
-      message: 'acción de crear',
-      payload,
-    };
+    // return {
+    //   message: 'acción de crear',
+    //   payload,
+    // };
+    return this.productsService.create(payload);
   }
 
   // Put edita completamente el modelo
   // Patch sólo edita parcialmente
   @Put(':productId')
   update(@Param('productId') id: string, @Body() payload: any) {
-    return {
-      id,
-      message: 'acción de actualizar',
-      payload,
-    };
+    // return {
+    //   id,
+    //   message: 'acción de actualizar',
+    //   payload,
+    // };
+    return this.productsService.update(+id, payload);
   }
 
   @Delete(':productId')
   delete(@Param('productId') id: string) {
-    return {
-      id,
-      message: 'acción de eliminar',
-    };
+    // return {
+    //   id,
+    //   message: 'acción de eliminar',
+    // };
+    return this.productsService.delete(+id);
   }
 }
