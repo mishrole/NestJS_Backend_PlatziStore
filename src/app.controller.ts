@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -20,6 +20,33 @@ export class AppController {
   ruta() {
     return 'con /.../';
   }
+
+  // Parámetros tipo Query
+  // Enviar múltiples parámetros concatenados
+  // Si no pasamos nada y no lo controlamos, es undefined
+  // @Get('products') // http://localhost:3000/products?limit=100&offset=50
+  // getProducts(@Query() params: any) {
+  //   const { limit, offset } = params;
+  //   return `Productos limit: ${limit} and offset: ${offset}`;
+  // }
+
+  @Get('products') // http://localhost:3000/products?brand=Prueba
+  getProducts(
+    @Query('limit') limit = 100,
+    @Query('offset') offset = 50,
+    @Query('brand') brand: string,
+  ) {
+    return `Productos limit: ${limit} and offset: ${offset}. Productos brand: ${brand}`;
+  }
+
+  // Error común : Este endpoint se cruza con getProduct por products/:id
+  // La solución es mover los dinámicos al final (getProduct)
+  @Get('products/filter') // http://localhost:3000/products/filter
+  getProductsFilter() {
+    return `Yo soy un filtro`;
+  }
+
+  // Endpoints dinámicos
 
   @Get('products/:productId')
   getProduct(@Param('productId') id: string) {
