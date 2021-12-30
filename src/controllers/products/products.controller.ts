@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -32,21 +34,28 @@ export class ProductsController {
     @Query('offset') offset = 50,
     @Query('brand') brand: string,
   ) {
-    return `Productos limit: ${limit} and offset: ${offset}. Productos brand: ${brand}`;
+    return {
+      message: `Productos limit: ${limit} and offset: ${offset}. Productos brand: ${brand}`,
+    };
   }
 
   // Error común : Este endpoint se cruza con getProduct por products/:id
   // La solución es mover los dinámicos al final (getProduct)
   @Get('filter') // http://localhost:3000/products/filter
   getProductsFilter() {
-    return `Yo soy un filtro`;
+    return {
+      message: `Yo soy un filtro`,
+    };
   }
 
   // Endpoints dinámicos
 
   @Get(':productId')
+  @HttpCode(HttpStatus.ACCEPTED)
   getProduct(@Param('productId') id: string) {
-    return `El productId es ${id}`;
+    return {
+      message: `El productId es ${id}`,
+    };
   }
 
   @Post()
@@ -70,6 +79,9 @@ export class ProductsController {
 
   @Delete(':productId')
   delete(@Param('productId') id: string) {
-    return id;
+    return {
+      id,
+      message: 'acción de eliminar',
+    };
   }
 }
