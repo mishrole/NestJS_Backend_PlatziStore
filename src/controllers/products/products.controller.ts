@@ -9,7 +9,10 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
+
+import { Response } from 'express';
 
 @Controller('products')
 export class ProductsController {
@@ -49,6 +52,17 @@ export class ProductsController {
   }
 
   // Endpoints dinámicos
+
+  //Si necesito manejar directamente el response de express
+  // No es recomendable, lo ideal es usar decoradores, pero es bueno saber que se puede hacer
+  @Get('express/:productId')
+  @HttpCode(HttpStatus.ACCEPTED)
+  getProductExpress(@Res() response: Response, @Param('productId') id: string) {
+    // Aunque el httpCode es 202, el response indica status 200
+    response.status(200).send({
+      message: `El productId es ${id}`,
+    });
+  }
 
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
