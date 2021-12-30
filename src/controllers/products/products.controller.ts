@@ -10,6 +10,7 @@ import {
   Put,
   // Query,
   Res,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { Response } from 'express';
@@ -74,13 +75,20 @@ export class ProductsController {
     });
   }
 
+  /* Los pipes permiten transformar y validar datos, sirven como tuberías con dos extremos: entrada y salida
+    Además, los pipes pueden encadernarse, convirtiendo la salida de un pipe en la entrada de otro
+
+    Son similares a un middleware en funcionamiento, sin embargo, los pipes se ejecutan en un orden de precedencia que esta mucho antes de llegar al request,
+    mientras que el midleware esta solo justamente antes de entrar al end-point.
+    */
+
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
-  getProduct(@Param('productId') id: string) {
+  getProduct(@Param('productId', ParseIntPipe) id: number) {
     // return {
     //   message: `El productId es ${id}`,
     // };
-    return this.productsService.findOne(+id);
+    return this.productsService.findOne(id);
   }
 
   @Post()
