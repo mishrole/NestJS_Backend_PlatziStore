@@ -16,6 +16,7 @@ import {
 import { Response } from 'express';
 import { ProductsService } from './../../services/products/products.service';
 import { ParseIntPipe } from 'src/shared/parse-int.pipe';
+import { CreateProductDto, UpdateProductDto } from './../../dtos/product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -93,7 +94,7 @@ export class ProductsController {
   }
 
   @Post()
-  create(@Body() payload: any) {
+  create(@Body() payload: CreateProductDto) {
     // return {
     //   message: 'acción de crear',
     //   payload,
@@ -104,21 +105,24 @@ export class ProductsController {
   // Put edita completamente el modelo
   // Patch sólo edita parcialmente
   @Put(':productId')
-  update(@Param('productId') id: string, @Body() payload: any) {
+  update(
+    @Param('productId', ParseIntPipe) id: number,
+    @Body() payload: UpdateProductDto,
+  ) {
     // return {
     //   id,
     //   message: 'acción de actualizar',
     //   payload,
     // };
-    return this.productsService.update(+id, payload);
+    return this.productsService.update(id, payload);
   }
 
   @Delete(':productId')
-  delete(@Param('productId') id: string) {
+  delete(@Param('productId', ParseIntPipe) id: number) {
     // return {
     //   id,
     //   message: 'acción de eliminar',
     // };
-    return this.productsService.delete(+id);
+    return this.productsService.delete(id);
   }
 }

@@ -5,6 +5,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Product } from './../../models/product.entity';
+import { CreateProductDto, UpdateProductDto } from './../../dtos/product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -35,7 +36,7 @@ export class ProductsService {
     return product;
   }
 
-  create(payload: any) {
+  create(payload: CreateProductDto) {
     this.counterId = this.counterId + 1;
     const newProduct = {
       id: this.counterId,
@@ -45,7 +46,7 @@ export class ProductsService {
     return newProduct;
   }
 
-  update(id: number, product: Product) {
+  update(id: number, product: UpdateProductDto) {
     const productFound = this.findOne(id);
 
     if (!productFound) {
